@@ -110,6 +110,30 @@ void FLEX_DeleteBuffer(FLEX_BUFFER *FlexBuffer)
     free(FlexBuffer);
 }
 
+void FLEX_RestoreBuffer(FLEX_BUFFER *FlexBuffer)
+{
+    size_t i, j;
+
+    if (!FlexBuffer)
+    {
+        return;
+    }
+
+    FlexBuffer->Position = 0;
+    FlexBuffer->Length = FlexBuffer->Size;
+
+    for (i = 0; i < 2; i++)
+    {
+        for (j = 0; j < 2; j++)
+        {
+            memset(&FlexBuffer->Range[i][j], 0, sizeof(FLEX_RANGE));
+        }
+    }
+
+    FlexBuffer->Dequeued[0] = false;
+    FlexBuffer->Dequeued[1] = false;
+}
+
 FLEX_RANGE *FLEX_GetWrBuffer(FLEX_BUFFER *FlexBuffer, size_t Length, bool Partial, uint32_t Milliseconds)
 {
     if (!FlexBuffer || !Length)
@@ -511,5 +535,4 @@ uint8_t * FLEX_GetExtraData(FLEX_RANGE *Range, size_t *Size)
 
     return Range->Next->Data;
 }
-
 

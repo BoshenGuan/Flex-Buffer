@@ -48,6 +48,8 @@
 // 7. Be careful with FLEX_PeekWrLength and FLEX_PeekRdLength, because the //
 //    buffer length may have changed since the function returns.           //
 //                                                                         //
+// 8. Use FLEX_RestoreBuffer to restore the buffer to initial empty state. //
+//                                                                         //
 // Application Note                                                        //
 //                                                                         //
 // 1. Data streaming. Employ Flex Buffer as dynamic speed balancer between //
@@ -84,6 +86,17 @@ FLEX_BUFFER *FLEX_CreateBuffer(size_t Size, size_t Alignment);
  * @return None
  */
 void FLEX_DeleteBuffer(FLEX_BUFFER *FlexBuffer);
+
+/**
+ * Restore default buffer state
+ *
+ * @param FlexBuffer Instance pointer (not NULL)
+ *
+ * @return None
+ *
+ * @note The buffer is restore to its initial state as if it is re-created
+ */
+void FLEX_RestoreBuffer(FLEX_BUFFER *FlexBuffer);
 
 /**
  * Get buffer ranges for write or read from the instance

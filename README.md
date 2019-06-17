@@ -26,6 +26,8 @@ Flex Buffer interfaces are designed to be simple but efficient. To make the util
 
 * Be careful with `FLEX_PeekWrLength` and `FLEX_PeekRdLength`, because the buffer length may have changed since the function returns.
 
+* Use `FLEX_RestoreBuffer` to restore the buffer to initial empty state.
+
 ## How to compile
 Flex Buffer is designed to be a cross-platform utility with supports to both x86/x64 Windows and Linux. On Linux, `cd` to the repository directory with `Makefile` and `make`. After building, executable `Example` is generated. Run it with `./Example` command. <br/>
 
