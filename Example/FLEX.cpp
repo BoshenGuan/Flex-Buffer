@@ -29,14 +29,14 @@ typedef struct FLEX_BUFFER
 
 FLEX_BUFFER *FLEX_CreateBuffer(size_t Size, size_t Alignment)
 {
-    size_t i, j;
+    size_t i;
 
     if (!Size)
     {
         return NULL;
     }
 
-    FLEX_BUFFER *FlexBuffer = (FLEX_BUFFER *)malloc(sizeof(FLEX_BUFFER));
+    FLEX_BUFFER *FlexBuffer = (FLEX_BUFFER *)calloc(1, sizeof(FLEX_BUFFER));
 
     if (!FlexBuffer)
     {
@@ -61,7 +61,6 @@ FLEX_BUFFER *FLEX_CreateBuffer(size_t Size, size_t Alignment)
         }
     }
     
-    FlexBuffer->Position = 0;
     FlexBuffer->Length = Size;
     FlexBuffer->Size = Size;
     FlexBuffer->Data = (uint8_t *)FLEX_Aligned_Malloc(Size, Alignment);
@@ -71,18 +70,7 @@ FLEX_BUFFER *FLEX_CreateBuffer(size_t Size, size_t Alignment)
         FLEX_DeleteBuffer(FlexBuffer);
         return NULL;
     }
-
-    for (i = 0; i < 2; i++)
-    {
-        for (j = 0; j < 2; j++)
-        {
-            memset(&FlexBuffer->Range[i][j], 0, sizeof(FLEX_RANGE));
-        }
-    }
-
-    FlexBuffer->Dequeued[0] = false;
-    FlexBuffer->Dequeued[1] = false;
-
+    
     return FlexBuffer;
 }
 
@@ -161,21 +149,24 @@ FLEX_RANGE *FLEX_GetWrBuffer(FLEX_BUFFER *FlexBuffer, size_t Length, bool Partia
         return NULL;
     }
 
-    uint64_t Nsec = Ts.tv_nsec + Milliseconds * NSEC_PER_MSEC;
-    
-    /* Handle carry on seconds */
-#if 0
-    while (Nsec >= NSEC_PER_SEC)
+    if (Milliseconds != FLEX_INFINITE)
     {
-        Ts.tv_sec++;
-        Nsec -= NSEC_PER_SEC;
-    }
+        uint64_t Nsec = Ts.tv_nsec + Milliseconds * NSEC_PER_MSEC;
 
-    Ts.tv_nsec = (long)Nsec;
+        /* Handle carry on seconds */
+#if 0
+        while (Nsec >= NSEC_PER_SEC)
+        {
+            Ts.tv_sec++;
+            Nsec -= NSEC_PER_SEC;
+        }
+
+        Ts.tv_nsec = (long)Nsec;
 #else
-    Ts.tv_sec += Nsec / NSEC_PER_SEC;
-    Ts.tv_nsec = (long)(Nsec % NSEC_PER_SEC);
+        Ts.tv_sec += Nsec / NSEC_PER_SEC;
+        Ts.tv_nsec = (long)(Nsec % NSEC_PER_SEC);
 #endif
+    }
 
     FLEX_RANGE *Range = NULL;
     Ret = 0;
@@ -263,21 +254,24 @@ FLEX_RANGE *FLEX_GetRdBuffer(FLEX_BUFFER *FlexBuffer, size_t Length, bool Partia
         return NULL;
     }
 
-    uint64_t Nsec = Ts.tv_nsec + Milliseconds * NSEC_PER_MSEC;
-
-    /* Handle carry on seconds */
-#if 0
-    while (Nsec >= NSEC_PER_SEC)
+    if (Milliseconds != FLEX_INFINITE)
     {
-        Ts.tv_sec++;
-        Nsec -= NSEC_PER_SEC;
-    }
+        uint64_t Nsec = Ts.tv_nsec + Milliseconds * NSEC_PER_MSEC;
 
-    Ts.tv_nsec = (long)Nsec;
+        /* Handle carry on seconds */
+#if 0
+        while (Nsec >= NSEC_PER_SEC)
+        {
+            Ts.tv_sec++;
+            Nsec -= NSEC_PER_SEC;
+        }
+
+        Ts.tv_nsec = (long)Nsec;
 #else
-    Ts.tv_sec += Nsec / NSEC_PER_SEC;
-    Ts.tv_nsec = (long)(Nsec % NSEC_PER_SEC);
+        Ts.tv_sec += Nsec / NSEC_PER_SEC;
+        Ts.tv_nsec = (long)(Nsec % NSEC_PER_SEC);
 #endif
+    }
 
     FLEX_RANGE *Range = NULL;
     Ret = 0;
