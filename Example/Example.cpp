@@ -220,6 +220,15 @@ int main(void)
         return -1;
     }
 
+#ifdef _WIN32
+
+    HANDLE hProducer = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)ProducerProc, BufferPtr, 0, NULL);
+    HANDLE hConsumer = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)ConsumerProc, BufferPtr, 0, NULL);
+
+    WaitForSingleObject(hProducer, INFINITE);
+    WaitForSingleObject(hConsumer, INFINITE);
+
+#else
     pthread_t TID_Producer;
     pthread_t TID_Consumer;
 
@@ -238,6 +247,7 @@ int main(void)
     /* Wait until threads stopped */
     pthread_join(TID_Producer, &Ret);
     pthread_join(TID_Consumer, &Ret);
+#endif
 
     /* Delete Flex Buffer instance and free resources. */
     FLEX_DeleteBuffer(BufferPtr);

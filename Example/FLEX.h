@@ -2,8 +2,6 @@
 #define __FLEX_H__
 
 #include "FLEX_OS.h"
-    
-#define FLEX_INFINITE   0xFFFFFFFF
 
 /////////////////////////////////////////////////////////////////////////////
 //       ________    _______  __    ____  __  ________________________     //
@@ -72,7 +70,7 @@ typedef struct FLEX_RANGE  FLEX_RANGE;
  * Create an instance for given size and alignment
  *
  * @param Size      Buffer size in bytes (> 0)
- * @param Alignment Memory alignment (power of 2)
+ * @param Alignment Memory alignment (power of 2), 0 if not required
  *
  * @return Instance pointer or NULL for error
  */
