@@ -1,25 +1,7 @@
 #ifndef __FLEX_OS_H__
 #define __FLEX_OS_H__
 
-#include <stdint.h>
-#include <stdlib.h>
-#include <stddef.h>
-#include <stdbool.h>
-
-#ifdef _WIN32
-#include <windows.h>
-#else
-#include <string.h>
-#include <pthread.h>
-#endif
-
-#include <time.h>
-
-#ifdef _WIN32
-#define FLEX_INFINITE INFINITE
-#else
-#define FLEX_INFINITE 0xFFFFFFFFUL
-#endif
+#include "FLEX.h"
 
 #ifdef _WIN32
 typedef HANDLE FLEX_MUTEX;
@@ -27,6 +9,12 @@ typedef HANDLE FLEX_EVENT; /* Use event instead of CV on Windows */
 #else
 typedef pthread_mutex_t FLEX_MUTEX;
 typedef pthread_cond_t  FLEX_EVENT; /* Use CV on Others */
+#endif
+
+#ifdef _WIN32
+#define FLEX_INFINITE INFINITE
+#else
+#define FLEX_INFINITE 0xFFFFFFFFUL
 #endif
 
 /////////////////////////////////////////////////////////////////////////////

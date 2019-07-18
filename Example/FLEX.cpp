@@ -175,11 +175,12 @@ FLEX_RANGE *FLEX_GetWrBuffer(FLEX_BUFFER *FlexBuffer, size_t Length, bool Partia
 #ifdef _WIN32
     uint64_t Time = (uint64_t)FileTime.dwLowDateTime + (((uint64_t)FileTime.dwHighDateTime) << 32);
 
+    /* FILETIME has a precision of 100-nano seconds */
     Time /= 10000ULL;
 
     if (Milliseconds != FLEX_INFINITE)
     {
-        Time += Milliseconds;
+        Time += Milliseconds; /* Wait will be terminated at Time */
     }
 #else
     if (Milliseconds != FLEX_INFINITE)
@@ -206,14 +207,18 @@ FLEX_RANGE *FLEX_GetWrBuffer(FLEX_BUFFER *FlexBuffer, size_t Length, bool Partia
 
             uint64_t Now = (uint64_t)FileTime.dwLowDateTime + (((uint64_t)FileTime.dwHighDateTime) << 32);
 
+            /* FILETIME has a precision of 100-nano seconds */
             Now /= 10000ULL;
 
             if (Now < Time)
             {
+                /* Prevent from infinite wait if (Time - Now == INFINITE),
+                 * which is probably possible on a multi-core CPU system. 
+                 */
                 Timeout = (uint32_t)min(Time - Now, FLEX_INFINITE - 1);
             }
             else
-                Timeout = 0;
+                Timeout = 0; /* Time in the past */
         }
 
         Ret = FLEX_Mutex_Unlock(&FlexBuffer->Mutex);
@@ -340,6 +345,7 @@ FLEX_RANGE *FLEX_GetRdBuffer(FLEX_BUFFER *FlexBuffer, size_t Length, bool Partia
 #ifdef _WIN32
     uint64_t Time = (uint64_t)FileTime.dwLowDateTime + (((uint64_t)FileTime.dwHighDateTime) << 32);
 
+    /* FILETIME has a precision of 100-nano seconds */
     Time /= 10000ULL;
 
     if (Milliseconds != FLEX_INFINITE)
@@ -371,14 +377,18 @@ FLEX_RANGE *FLEX_GetRdBuffer(FLEX_BUFFER *FlexBuffer, size_t Length, bool Partia
 
             uint64_t Now = (uint64_t)FileTime.dwLowDateTime + (((uint64_t)FileTime.dwHighDateTime) << 32);
 
+            /* FILETIME has a precision of 100-nano seconds */
             Now /= 10000ULL;
 
             if (Now < Time)
             {
+                /* Prevent from infinite wait if (Time - Now == INFINITE),
+                 * which is probably possible on a multi-core CPU system. 
+                 */
                 Timeout = (uint32_t)min(Time - Now, FLEX_INFINITE - 1);
             }
             else
-                Timeout = 0;
+                Timeout = 0; /* Time in the past */
         }
 
         Ret = FLEX_Mutex_Unlock(&FlexBuffer->Mutex);

@@ -1,8 +1,6 @@
 #ifndef __FLEX_H__
 #define __FLEX_H__
 
-#include "FLEX_OS.h"
-
 /////////////////////////////////////////////////////////////////////////////
 //       ________    _______  __    ____  __  ________________________     //
 //      / ____/ /   / ____/ |/ /   / __ )/ / / / ____/ ____/ ____/ __ \    //
@@ -62,6 +60,17 @@
 //    from the buffer.                                                     //
 //                                                                         //
 /////////////////////////////////////////////////////////////////////////////
+
+#include <stdint.h>
+#include <stdlib.h>
+#include <string.h>
+
+#ifdef _WIN32
+#include <windows.h>
+#else
+#include <pthread.h>
+#include <stdbool.h>
+#endif
 
 typedef struct FLEX_BUFFER FLEX_BUFFER;
 typedef struct FLEX_RANGE  FLEX_RANGE;

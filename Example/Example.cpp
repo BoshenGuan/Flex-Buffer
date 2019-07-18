@@ -2,6 +2,7 @@
 //
 
 #include "stdafx.h"
+#include <time.h>
 #include <stdio.h>
 
 #ifdef _WIN32
@@ -220,6 +221,14 @@ int main(void)
         return -1;
     }
 
+    /*
+     * Create two threads. One thread produces some data and
+     * puts the data into the buffer. The other thread gets 
+     * data from the buffer and processes it.
+     *
+     * Pass the instance pointer in as threads argument.
+     */
+
 #ifdef _WIN32
 
     HANDLE hProducer = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)ProducerProc, BufferPtr, 0, NULL);
@@ -232,13 +241,6 @@ int main(void)
     pthread_t TID_Producer;
     pthread_t TID_Consumer;
 
-    /*
-     * Create two threads. One thread produces some data and
-     * puts the data into the buffer. The other thread gets 
-     * data from the buffer and processes it.
-     *
-     * Pass the instance pointer in as threads argument.
-     */
     pthread_create(&TID_Producer, NULL, ProducerProc, BufferPtr);
     pthread_create(&TID_Consumer, NULL, ConsumerProc, BufferPtr);
 
