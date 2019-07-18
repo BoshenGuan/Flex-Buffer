@@ -29,17 +29,16 @@ Flex Buffer interfaces are designed to be simple but efficient. To make the util
 * Use `FLEX_RestoreBuffer` to restore the buffer to initial empty state.
 
 ## How to compile
-Flex Buffer is designed to be a cross-platform utility with supports to both x86/x64 Windows and Linux. On Linux, `cd` to the repository directory with `Makefile` and `make`. After building, executable `Example` is generated. Run it with `./Example` command. <br/>
+Flex Buffer is designed to be a cross-platform utility with supports to both x86/x64 Windows (including Windows XP) and Linux. On Linux, `cd` to the repository directory containing `Makefile` and `make`. After building, executable `Example` is generated. Run it with `./Example` command. <br/>
 
-On Windows, compilation is a little bit complicated. Because Flex Buffer is currently based on `pthreads`, which is not native supported by Windows, one has to download `pthreads-win32` as dependency. For convenient, `pthreads-w32-2-9-1-release` is included in this repository. Therefore, the only thing left to do is to open Visual Studio solution and rebuild. <br/>
+On Windows, Visual Studio is required to build the code. Flex Buffer is developed using Visual Studio 2013 and it is tested to build on Visual Studio 2010. When building with version other than 2013, `Platform Toolset` in project's property page should be selected properly according to the Visual Studio version being used. For example, `v100` usually stands for Visual Studio 2010, `v120` for Visual Studio 2013 and `v141` for Visual Studio 2017. <br/>
 
 ## Application Note
-1. Data streaming. Employ Flex Buffer as dynamic speed balancer between source and destination. Use larger buffer size to prevent from protential data lost caused by speed jitter. By selecting read and write length elaborately, it is possible to achieve source and destination speeds adaptation.
+1. Data streaming. Employ Flex Buffer as dynamic speed balancer between source and destination. Use larger buffer size to prevent from potential data lost caused by speed jitter. By selecting read and write length elaborately, it is possible to achieve source and destination speeds adaptation.
 
-2. Frame composer/decomposer. Use Flex Buffer with streaming-oriented protocol (such as TCP) to provide easy frame 
-composition and decomposition ability. Streaming data is pushed into the buffer at any size, and pulled out blockwise (usually a complete frame) from the buffer.
+2. Frame composer/decomposer. Use Flex Buffer with streaming-oriented protocol (such as TCP) to provide easy frame composition and decomposition ability. Streaming data is pushed into the buffer at any size, and pulled out block-wisely (usually a complete frame) from the buffer.
 
 ## Limitation
 To keep memory continuity, Flex Buffer only supports one producer and one consumer. That is, once a buffer (read or write) is obtained, it has to be put or released before obtaining the next buffer. <br/>
 
-Although `pthreads` is a cross-platform library, it is not supported by all platforms. Flex Buffer is currently somewhat coupled with `pthreads`, which makes it difficult to port to OS that does not support `pthreads`. <br/>
+Flex Buffer is currently implemented using native synchronization primitives on Windows and `pthreads` on others (for example, Linux). Although `pthreads` is a cross-platform library, it is not supported by all platforms, which makes it difficult to port Flex Buffer to OS that does not support `pthreads`. <br/>
